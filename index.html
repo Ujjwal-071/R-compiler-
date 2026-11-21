@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f7f8fc">
+<title>CodeEasy — Simple Online Code Lab</title>
+<style>
+:root{--bg:#f6f7fb;--paper:#fff;--ink:#202437;--muted:#7b8295;--line:#e9ebf2;--purple:#7055df;--purple2:#f0edff;--green:#198754;--red:#c34459;--shadow:0 8px 28px #2426420b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+header{height:65px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 max(18px,calc((100vw - 1100px)/2))}
+.brand{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:800;letter-spacing:-.5px}.logo{height:34px;width:34px;border-radius:11px;background:linear-gradient(135deg,#7055df,#a18cf4);display:grid;place-items:center;color:white;font-weight:900}.headnote{color:var(--muted);font-size:12px}
+main{max-width:1100px;margin:28px auto;padding:0 18px}.intro{margin:0 0 19px}.intro h1{font-size:clamp(25px,4vw,34px);letter-spacing:-1px;margin:0 0 3px}.intro p{color:var(--muted);margin:0;font-size:13px}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:15px;box-shadow:var(--shadow);overflow:hidden}.editor-top{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--line);gap:10px;flex-wrap:wrap}.left-tools,.right-tools{display:flex;align-items:center;gap:8px}.language{border:1px solid var(--line);background:#fff;color:#454b60;border-radius:9px;padding:8px 11px;font:inherit;font-size:12px;max-width:170px}.detected{font-size:11px;color:var(--muted)}button{font:inherit;cursor:pointer;border:0}.btn{padding:9px 13px;border-radius:9px;font-size:12px;font-weight:700}.run{background:var(--purple);color:white}.run:hover{background:#5d43ca}.light{background:#f1f2f7;color:#5b6275}.editor{display:grid;grid-template-columns:39px 1fr;min-height:260px}.numbers{background:#fcfcfe;border-right:1px solid #f0f1f5;color:#b4b8c5;text-align:right;padding:15px 10px 15px 0;font:12px/1.8 ui-monospace,monospace;white-space:pre;user-select:none;overflow:hidden}.code{display:block;width:100%;min-height:260px;border:0;outline:0;resize:vertical;padding:15px 16px;color:#30364b;background:#fff;font:13px/1.8 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2;white-space:pre;overflow:auto}.editor-bottom{border-top:1px solid var(--line);padding:8px 14px;display:flex;justify-content:space-between;color:#9298a8;font-size:11px}
+.hint{padding:10px 14px;background:#fbfaff;border-top:1px solid #f0edff;color:#77718f;font-size:11px}
+.results{margin-top:17px}.result-head{display:flex;align-items:center;justify-content:space-between;padding:12px 15px;border-bottom:1px solid var(--line);gap:10px}.result-title{font-weight:750;font-size:13px}.status{font-size:11px;color:var(--muted)}.tabs{display:flex;gap:5px;padding:9px 12px 0;border-bottom:1px solid var(--line)}.tab{background:transparent;color:#81879a;padding:8px 10px;font-size:11px;border-bottom:2px solid transparent}.tab.active{color:var(--purple);border-color:var(--purple);font-weight:750}.pane{padding:15px;min-height:105px}.console{white-space:pre-wrap;overflow-wrap:anywhere;background:#fcfcfe;border-radius:9px;padding:13px;font:12px/1.8 ui-monospace,monospace;color:#34394b;min-height:75px}.empty{color:#a1a6b4}.explain{color:#555d72;font-size:13px;line-height:1.7}.explain ul{padding-left:19px;margin:8px 0}.visual-wrap{min-height:130px}.chartbox{height:250px;max-width:720px;margin:auto}.diagram{padding:12px;background:#faf9ff;border-radius:10px;overflow:auto;color:#5b4ca2;font:12px/1.8 ui-monospace,monospace;white-space:pre-wrap}.quick{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:14px 1px}.quick span{font-size:11px;color:var(--muted)}.sample{background:#fff;border:1px solid var(--line);color:#626a7e;border-radius:8px;padding:7px 10px;font-size:11px}.sample:hover{border-color:#c8bdfb;color:var(--purple)}
+.footer-note{color:#9298a8;font-size:11px;margin:13px 2px;line-height:1.7}.pill{display:inline-block;background:#f0edff;color:#7055df;border-radius:20px;padding:3px 8px;font-size:10px;font-weight:700}
+@media(max-width:600px){header{height:58px}.headnote{display:none}main{margin:20px auto;padding:0 11px}.editor-top{padding:10px}.language{max-width:140px}.editor{grid-template-columns:30px 1fr}.numbers{padding-right:7px;font-size:11px}.code{padding:12px;font-size:12px}.pane{padding:11px}.result-head{padding:11px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">⌘</div> CodeEasy</div><div class="headnote">A simpler place to write, run & understand code</div></header>
+<main>
+<section class="intro"><h1>Just write your code.</h1><p>Choose a language or let CodeEasy detect it. Run your code and view the result below.</p></section>
+<section class="panel">
+ <div class="editor-top">
+  <div class="left-tools">
+   <select class="language" id="language" aria-label="Programming language">
+    <option value="auto">✨ Auto detect</option><option value="r">R</option><option value="python">Python</option><option value="javascript">JavaScript</option><option value="sql">SQL</option>
+   </select>
+   <span class="detected" id="detected">Language: waiting for code</span>
+  </div>
+  <div class="right-tools"><button class="btn light" id="clear">Clear</button><button class="btn run" id="run">▶ Run code</button></div>
+ </div>
+ <div class="editor"><div class="numbers" id="numbers">1</div><textarea id="code" class="code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Code editor" placeholder="Paste or write your code here...
+
+Example:
+numbers <- c(10, 20, 30, 40)
+mean(numbers)"></textarea></div>
+ <div class="editor-bottom"><span id="linecount">1 line</span><span>Tip: Ctrl + Enter to run</span></div>
+ <div class="hint">💡 You don't need to set up anything. Paste your code, then press <b>Run code</b>.</div>
+</section>
+<section class="panel results">
+ <div class="result-head"><div class="result-title">Your results</div><span class="status" id="status">Ready when you are</span></div>
+ <div class="tabs"><button class="tab active" data-tab="output">Output</button><button class="tab" data-tab="explain">Simple explanation</button><button class="tab" data-tab="visual">Visual view</button></div>
+ <div class="pane" id="outputPane"><div class="console empty" id="output">Your program's output will appear here.</div></div>
+ <div class="pane" id="explainPane" hidden><div class="explain" id="explanation">Run your code to get a beginner-friendly summary of what it does.</div></div>
+ <div class="pane visual-wrap" id="visualPane" hidden><div id="visual" class="empty">Charts and visual summaries will appear here when the result contains suitable data.</div><div class="chartbox"><canvas id="chart" hidden></canvas></div></div>
+</section>
+<div class="quick"><span>Try a sample:</span><button class="sample" data-sample="r">R example</button><button class="sample" data-sample="python">Python example</button><button class="sample" data-sample="javascript">JavaScript example</button><button class="sample" data-sample="sql">SQL example</button></div>
+<p class="footer-note"><span class="pill">Browser-based</span> Supported runtimes load from the internet the first time you use them. CodeEasy currently runs R, Python, JavaScript and SQL. It can identify other languages, but languages without an included runtime cannot be executed here. Results and explanations are generated locally using simple rules, not an AI service.</p>
+</main>
+<script type="module">
+const $=id=>document.getElementById(id);
+const code=$('code'), output=$('output'), status=$('status'), langSelect=$('language');
+let runtimes={r:null,python:null,sql:null}, chart=null;
+const samples={
+r:'scores <- c(65, 78, 90, 82, 95)\\nprint(scores)\\nmean(scores)\\nbarplot(scores, main="Student scores")',
+python:'numbers = [10, 20, 30, 40, 50]\\nprint("Numbers:", numbers)\\nprint("Average:", sum(numbers) / len(numbers))',
+javascript:'const prices = [100, 150, 200, 250];\\nconsole.log("Prices:", prices);\\nconsole.log("Average:", prices.reduce((a,b) => a+b, 0) / prices.length);',
+sql:'SELECT "Aarav" AS name, 85 AS marks\\nUNION ALL\\nSELECT "Diya", 92\\nUNION ALL\\nSELECT "Kabir", 78;'
+};
+function detect(src){
+ const s=src.trim();
+ if(!s)return 'unknown';
+ if(/^\s*(SELECT|WITH|INSERT|UPDATE|DELETE|CREATE TABLE|DROP TABLE)\b/i.test(s))return 'sql';
+ if(/(<-|%>%|<-|c\\s*\\(|data\\.frame\\s*\\(|ggplot\\s*\\(|library\\s*\\()/i.test(s))return 'r';
+ if(/^\s*(def |import |from .* import|print\\s*\\(|elif |class .*:)|\b(True|False|None)\b|^\s*#.*python/im.test(s))return 'python';
+ if(/(console\\.log|const |let |=>|function\\s*\\(|document\\.|window\\.)/.test(s))return 'javascript';
+ if(/\\b(print|cat|summary|mean|median|plot)\\s*\\(/.test(s))return 'r';
+ return 'javascript';
+}
+function updateLines(){let n=code.value.split('\\n').length;$('numbers').textContent=Array.from({length:n},(_,i)=>i+1).join('\\n');$('linecount').textContent=n+(n===1?' line':' lines');}
+code.addEventListener('input',()=>{updateLines();let d=langSelect.value==='auto'?detect(code.value):langSelect.value;$('detected').textContent='Language: '+(d==='unknown'?'waiting':d[0].toUpperCase()+d.slice(1));});
+code.addEventListener('scroll',()=>$('numbers').scrollTop=code.scrollTop);updateLines();
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));['output','explain','visual'].forEach(t=>$(t+'Pane').hidden=t!==b.dataset.tab);}));
+function setOutput(s){output.textContent=s||'(No output was printed.)';output.classList.remove('empty');}
+function simpleExplain(src,language,result){
+ const lines=src.split('\\n').filter(x=>x.trim()&&!/^\\s*(#|\\/\\/|--)/.test(x));
+ let bullets=[];
+ if(language==='r'){if(/c\\s*\\(/.test(src))bullets.push('Creates a vector (a collection of values).');if(/mean\\s*\\(/.test(src))bullets.push('Calculates the average of the values.');if(/data\\.frame/.test(src))bullets.push('Creates a table-like data frame.');if(/plot\\s*\\(|barplot\\s*\\(|hist\\s*\\(/.test(src))bullets.push('Requests a statistical plot.');}
+ if(language==='python'){if(/\\[.*\\]/s.test(src))bullets.push('Creates a list of values.');if(/sum\\s*\\(/.test(src))bullets.push('Adds the values together.');if(/len\\s*\\(/.test(src))bullets.push('Counts the number of items.');if(/def\\s+/.test(src))bullets.push('Defines a reusable function.');}
+ if(language==='javascript'){if(/\\[.*\\]/s.test(src))bullets.push('Creates an array of values.');if(/console\\.log/.test(src))bullets.push('Prints information to the console.');if(/function|=>/.test(src))bullets.push('Defines a function that can perform a task.');}
+ if(language==='sql'){bullets.push('Sends a SQL query to retrieve or change data.');if(/SELECT/i.test(src))bullets.push('SELECT chooses the columns or values to show.');if(/WHERE/i.test(src))bullets.push('WHERE filters which rows are included.');if(/ORDER BY/i.test(src))bullets.push('ORDER BY sorts the results.');}
+ $('explanation').innerHTML='<b>Detected language:</b> '+language.toUpperCase()+'<ul>'+((bullets.length?bullets:['Runs the statements written in your code.']).map(x=>'<li>'+x+'</li>').join(''))+'</ul><b>What happened?</b> The program ran and produced the output shown in the Output tab. This is a basic code-based explanation, not a full AI review.';
+}
+function makeVisual(text){
+ $('visual').hidden=false;$('chart').hidden=true;$('visual').textContent='No chartable numeric result detected. If your code prints a list or numeric values, a simple chart may appear here.';
+ const nums=[...text.matchAll(/(?<![A-Za-z_])(-?\\d+(?:\\.\\d+)?)(?![A-Za-z_])/g)].map(m=>Number(m[1])).filter(Number.isFinite);
+ if(nums.length>=2&&nums.length<=30&&window.Chart){
+  $('visual').textContent='A quick chart of the numbers found in your output:';
+  $('chart').hidden=false;if(chart)chart.destroy();
+  chart=new Chart($('chart'),{type:'bar',data:{labels:nums.map((_,i)=>'Value '+(i+1)),datasets:[{label:'Output values',data:nums}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true}}}});
+ }
+}
+async function loadR(){if(runtimes.r)return runtimes.r;status.textContent='Loading R engine…';let {WebR}=await import('https://webr.r-wasm.org/latest/webr.mjs');let w=new WebR();await w.init();runtimes.r=w;return w;}
+async function runR(src){
+ const w=await loadR();
+ // Evaluate expressions one by one so printed output and final values are captured.
+ const quoted=JSON.stringify(src);
+ const script=`local({ .src <- ${quoted}; .out <- capture.output({ .exprs <- parse(text=.src); for (.expr in .exprs) { .v <- withVisible(eval(.expr, envir=.GlobalEnv)); if (.v$visible) print(.v$value) } }); paste(.out, collapse="\\\\n") })`;
+ let v=await w.evalR(script);return await v.toJs();
+}
+async function runPython(src){
+ status.textContent='Loading Python…';
+ const {loadPyodide}=await import('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.mjs');
+ if(!runtimes.python)runtimes.python=await loadPyodide();
+ const py=runtimes.python;
+ py.setStdout({batched:s=>{py._codeeasyOut=(py._codeeasyOut||'')+s+'\\n';}});
+ py.setStderr({batched:s=>{py._codeeasyErr=(py._codeeasyErr||'')+s+'\\n';}});
+ py._codeeasyOut='';py._codeeasyErr='';
+ try{let result=await py.runPythonAsync(src);let out=py._codeeasyOut+(py._codeeasyErr||'');if(result!==undefined)out+=String(result);return out.trim();}
+ catch(e){throw e;}
+}
+async function runJS(src){
+ const logs=[];const safeConsole={log:(...a)=>logs.push(a.map(x=>typeof x==='object'?JSON.stringify(x):String(x)).join(' ')),warn:(...a)=>logs.push('Warning: '+a.join(' ')),error:(...a)=>logs.push('Error: '+a.join(' ')),table:x=>logs.push(JSON.stringify(x,null,2))};
+ const AsyncFunction=Object.getPrototypeOf(async function(){}).constructor;
+ let result=await new AsyncFunction('console',src)(safeConsole);
+ if(result!==undefined)logs.push(String(result));
+ return logs.join('\\n');
+}
+async function runSQL(src){
+ if(!window.alasql){let m=await import('https://cdn.jsdelivr.net/npm/alasql@4.6.6/+esm');window.alasql=m.default||m;}
+ const res=window.alasql(src);return Array.isArray(res)?JSON.stringify(res,null,2):String(res??'Query executed.');
+}
+async function run(){
+ const src=code.value.trim();if(!src){setOutput('Please paste your code first.');return;}
+ const lang=langSelect.value==='auto'?detect(src):langSelect.value;
+ $('detected').textContent='Language: '+lang.toUpperCase();
+ $('run').disabled=true;$('run').textContent='Running…';status.textContent='Running your code…';
+ try{
+  let result;
+  if(lang==='r')result=await runR(src);
+  else if(lang==='python')result=await runPython(src);
+  else if(lang==='javascript')result=await runJS(src);
+  else if(lang==='sql')result=await runSQL(src);
+  else throw new Error('This language is detected but does not have an execution engine in this page.');
+  setOutput(String(result));simpleExplain(src,lang,String(result));makeVisual(String(result));status.textContent='Finished successfully';
+ }catch(e){setOutput('Something went wrong:\\n'+(e?.message||String(e))+'\\n\\nCheck the code and try again.');output.style.color='#c34459';status.textContent='Please check your code';$('explanation').textContent='The program did not finish. The error message in the Output tab may help you find the issue.'; $('visual').textContent='No visual result because the code did not run successfully.';}
+ finally{$('run').disabled=false;$('run').textContent='▶ Run code';}
+}
+$('run').addEventListener('click',run);
+$('clear').addEventListener('click',()=>{code.value='';updateLines();$('detected').textContent='Language: waiting for code';setOutput('Your program\\'s output will appear here.');output.classList.add('empty');output.style.color='';status.textContent='Ready when you are';$('explanation').textContent='Run your code to get a beginner-friendly summary of what it does.';$('visual').textContent='Charts and visual summaries will appear here when the result contains suitable data.';if(chart){chart.destroy();chart=null;}});
+code.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter'){e.preventDefault();run();}if(e.key==='Tab'){e.preventDefault();code.setRangeText('  ',code.selectionStart,code.selectionEnd,'end');updateLines();}});
+document.querySelectorAll('.sample').forEach(b=>b.addEventListener('click',()=>{let l=b.dataset.sample;code.value=samples[l];langSelect.value='auto';updateLines();$('detected').textContent='Language: '+l.toUpperCase();setOutput('Sample loaded. Press Run code to see the result.');output.classList.add('empty');status.textContent='Ready to run';}));
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>
